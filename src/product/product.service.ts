@@ -39,10 +39,16 @@ export class ProductService {
       throw new NotFoundException('Invalid product id');
     }
     const sum =
-      (await this.cartRepository.sum('travelerAmount', {
-        expiresAt: MoreThan(now),
-        product: product,
-      })) || 0;
+      (await this.cartRepository.sum('travelerAmount', [
+        {
+          expiresAt: MoreThan(now),
+          product: product,
+        },
+        {
+          isPaid: true,
+          product: product,
+        },
+      ])) || 0;
 
     return product.totalSeats - sum;
   }
