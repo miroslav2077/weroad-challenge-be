@@ -16,8 +16,13 @@ export class CartService {
   ) {}
 
   async findOneById(id: string): Promise<Cart> {
+    const now = new Date();
     const cart = await this.cartRepository.findOne({
-      where: { id: id },
+      where: {
+        id: id,
+        expiresAt: MoreThan(now),
+        isPaid: false,
+      },
       relations: {
         product: true,
       },
@@ -60,11 +65,30 @@ export class CartService {
         travelerEmail: data.travelerEmail,
         unitPrice: product.price,
         totalAmount: product.price * data.travelerAmount,
+        isPaid: false,
       });
 
       return await this.cartRepository.save(cart);
     } catch (error) {
       throw new HttpException(error.message, 500);
+    }
+  }
+
+  async setAsPaid(id: string): Promise<boolean> {
+    const now = new Date();
+    try {
+      const response = await this.cartRepository.update(
+        {
+          id: id,
+          expiresAt: MoreThan(now),
+          isPaid: false,
+        },
+        { isPaid: true },
+      );
+
+      return response.affected === 1;
+    } catch (error) {
+      return false;
     }
   }
 }

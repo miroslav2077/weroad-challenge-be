@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Args, Query, Resolver, Mutation } from '@nestjs/graphql';
 
 import { Cart } from './entities/cart.entity';
@@ -23,6 +23,17 @@ export class CartResolver {
     const cart = await this.cartService.create(newCartData);
 
     return cart;
+  }
+
+  @Mutation(returns => Boolean)
+  async setAsPaid(@Args('id') id: string): Promise<boolean> {
+    const isSuccessful = await this.cartService.setAsPaid(id);
+
+    if (!isSuccessful) {
+      throw new BadRequestException(`Cannot set cart with id ${id} as paid`);
+    }
+
+    return isSuccessful;
   }
 
   // @Query(returns => [Cart])

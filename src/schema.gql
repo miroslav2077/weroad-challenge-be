@@ -12,6 +12,7 @@ type Cart {
   travelerAmount: Int!
   unitPrice: Int!
   product: Product!
+  isPaid: Boolean!
   totalAmount: Int!
 }
 
@@ -49,6 +50,7 @@ type Query {
 
 type Mutation {
   addCart(newCartData: NewCartInput!): Cart!
+  setAsPaid(id: String!): Boolean!
 }
 
 input NewCartInput {

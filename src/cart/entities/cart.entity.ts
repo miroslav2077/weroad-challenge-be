@@ -54,6 +54,10 @@ export class Cart {
   @JoinColumn({ name: 'productId' })
   product: Product;
 
+  @Field(() => Boolean)
+  @Column('boolean', { default: false })
+  isPaid: boolean = false;
+
   @Field(() => Int)
   @Column()
   totalAmount: number;
