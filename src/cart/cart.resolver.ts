@@ -11,18 +11,22 @@ export class CartResolver {
 
   @Query(returns => Cart)
   async cart(@Args('id') id: string): Promise<Cart> {
-    const cart = await this.cartService.findOneById(id);
-    if (!cart) {
+    try {
+      const cart = await this.cartService.findOneById(id);
+      return cart;
+    } catch {
       throw new NotFoundException(`Cart with id ${id} not found`);
     }
-    return cart;
   }
 
   @Mutation(returns => Cart)
   async addCart(@Args('newCartData') newCartData: NewCartInput): Promise<Cart> {
-    const cart = await this.cartService.create(newCartData);
-
-    return cart;
+    try {
+      const cart = await this.cartService.create(newCartData);
+      return cart;
+    } catch {
+      throw new BadRequestException('Could not create cart');
+    }
   }
 
   @Mutation(returns => Boolean)

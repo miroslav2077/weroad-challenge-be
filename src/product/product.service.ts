@@ -2,7 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Product } from './entities/product.entity';
 import { Cart } from '../cart/entities/cart.entity';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { MoreThan, Repository } from 'typeorm';
 
 @Injectable()
@@ -14,13 +14,15 @@ export class ProductService {
     private readonly cartRepository: Repository<Cart>,
   ) {}
   async findOneById(id: string): Promise<Product> {
-    const product = await this.productRepository.findOneBy({ id: id });
+    const product = await this.productRepository.findOneByOrFail({ id: id });
 
     return product;
   }
 
   async findOneBySlug(slug: string): Promise<Product> {
-    const product = await this.productRepository.findOneBy({ slug: slug });
+    const product = await this.productRepository.findOneByOrFail({
+      slug: slug,
+    });
 
     return product;
   }
@@ -33,11 +35,8 @@ export class ProductService {
 
   async getAvailableSeats(id: string): Promise<number> {
     const now = new Date();
-    const product = await this.productRepository.findOneBy({ id: id });
+    const product = await this.productRepository.findOneByOrFail({ id: id });
 
-    if (!product) {
-      throw new NotFoundException('Invalid product id');
-    }
     const sum =
       (await this.cartRepository.sum('travelerAmount', [
         {

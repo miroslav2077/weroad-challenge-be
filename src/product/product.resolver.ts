@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Args, Query, Resolver } from '@nestjs/graphql';
 
 import { Product } from './entities/product.entity';
@@ -10,36 +10,42 @@ export class ProductResolver {
 
   @Query(returns => Product)
   async product(@Args('id') id: string): Promise<Product> {
-    const product = await this.productService.findOneById(id);
-    if (!product) {
+    try {
+      const product = await this.productService.findOneById(id);
+      return product;
+    } catch {
       throw new NotFoundException(`Product with id ${id} not found`);
     }
-    return product;
   }
 
   @Query(returns => Product)
   async productBySlug(@Args('slug') slug: string): Promise<Product> {
-    const product = await this.productService.findOneBySlug(slug);
-
-    if (!product) {
+    try {
+      const product = await this.productService.findOneBySlug(slug);
+      return product;
+    } catch {
       throw new NotFoundException(`Product with slug ${slug} not found`);
     }
-    return product;
   }
 
   @Query(returns => [Product])
   async products(): Promise<Product[]> {
-    const products = await this.productService.findAll();
-    if (!products.length) {
+    try {
+      const products = await this.productService.findAll();
+      return products;
+    } catch {
       throw new NotFoundException('No products found');
     }
-    return products;
   }
 
   @Query(returns => Number)
   async availableSeats(@Args('id') id: string): Promise<number> {
-    const availableSeats = await this.productService.getAvailableSeats(id);
+    try {
+      const availableSeats = await this.productService.getAvailableSeats(id);
 
-    return availableSeats;
+      return availableSeats;
+    } catch {
+      throw new BadRequestException("Couldn't retrieve available seats");
+    }
   }
 }

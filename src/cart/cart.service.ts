@@ -17,7 +17,7 @@ export class CartService {
 
   async findOneById(id: string): Promise<Cart> {
     const now = new Date();
-    const cart = await this.cartRepository.findOne({
+    const cart = await this.cartRepository.findOneOrFail({
       where: {
         id: id,
         expiresAt: MoreThan(now),
@@ -33,13 +33,9 @@ export class CartService {
 
   async create(data: NewCartInput): Promise<Cart> {
     // retrieve the product details to include them in the cart
-    const product = await this.productRepository.findOneBy({
+    const product = await this.productRepository.findOneByOrFail({
       id: data.productId,
     });
-
-    if (!product) {
-      throw new BadRequestException('Product not found');
-    }
 
     // get seats occupied by current carts' sessions
     let now = new Date();

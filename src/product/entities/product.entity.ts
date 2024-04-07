@@ -86,6 +86,6 @@ export class Product {
   imageUrl: string;
 
   @Field(() => Cart)
-  @OneToMany((_type) => Cart, (cart: Cart) => cart.product)
+  @OneToMany((type) => Cart, (cart: Cart) => cart.product)
   carts: Cart[];
 }
