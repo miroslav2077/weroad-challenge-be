@@ -15,7 +15,7 @@ Implement a checkout process for WeRoad users to buy a Travel where:
 - After confirming the number of seats to reserve the availability should be granted for 15 minutes before the cart expires;
 
 ### Reasoning behind decisions
-- I used TypeORM and MySQL as those felt more appropriate for a faser development and iteration cycle.
+- I used TypeORM and MySQL as those felt more appropriate for a faster development and iteration cycle.
 - Migrations include data seeding to avoid manually adding required data.
 - HTTP provider was left at default (Express) as I didn't need MVC.
 - GraphQL was integrated using the official '@nestjs/graphql @nestjs/apollo' combo.
